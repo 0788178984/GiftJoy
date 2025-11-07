@@ -80,12 +80,13 @@ class GiftStorageManager {
             const objectStore = transaction.objectStore(this.storeName);
             const request = objectStore.get(giftId);
 
-            request.onsuccess = () => {
+            request.onsuccess = async () => {
                 const gift = request.result;
                 
                 if (gift && gift.imageBlob) {
-                    // Convert Blob back to data URL for display
-                    gift.image = this.blobToDataURL(gift.imageBlob);
+                    // Convert Blob back to data URL for display (AWAIT the promise!)
+                    gift.image = await this.blobToDataURL(gift.imageBlob);
+                    console.log('✅ Image converted from Blob to data URL');
                 }
                 
                 resolve(gift);

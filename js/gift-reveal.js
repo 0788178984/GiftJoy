@@ -10,23 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
         giftId: urlParams.get('id') || null
     };
 
-    // If gift ID exists, try to load from IndexedDB
-    if (giftData.giftId) {
-        loadGiftData(giftData.giftId);
-    }
-    
-    async function loadGiftData(giftId) {
-        try {
-            const savedGift = await window.giftStorage.getGift(giftId);
-            if (savedGift) {
-                Object.assign(giftData, savedGift);
-                console.log('✅ Gift loaded from IndexedDB');
-            }
-        } catch (e) {
-            console.error('Error loading gift:', e);
-        }
-    }
-
     // Puzzle types
     const puzzles = ['math', 'word', 'memory'];
     let currentPuzzle = puzzles[Math.floor(Math.random() * puzzles.length)];
@@ -36,14 +19,39 @@ document.addEventListener('DOMContentLoaded', function() {
     const openingSection = document.getElementById('opening-section');
     const revealSection = document.getElementById('reveal-section');
     
-    // Initialize
-    init();
+    // Load gift data if ID exists
+    async function loadGiftData(giftId) {
+        try {
+            console.log('🔍 Loading gift with ID:', giftId);
+            const savedGift = await window.giftStorage.getGift(giftId);
+            if (savedGift) {
+                Object.assign(giftData, savedGift);
+                console.log('✅ Gift loaded from IndexedDB');
+                console.log('📷 Image data present:', !!savedGift.image);
+                if (savedGift.image) {
+                    console.log('📏 Image data length:', savedGift.image.length);
+                }
+            } else {
+                console.warn('⚠️ No gift found with ID:', giftId);
+            }
+        } catch (e) {
+            console.error('❌ Error loading gift:', e);
+        }
+    }
     
-    function init() {
+    // Initialize
+    async function init() {
+        // If gift ID exists, load from IndexedDB first
+        if (giftData.giftId) {
+            await loadGiftData(giftData.giftId);
+        }
+        
         // Skip puzzle and go directly to opening animation
         setupEventListeners();
         showOpening();
     }
+    
+    init();
     
     function setupEventListeners() {
         document.getElementById('skip-quest').addEventListener('click', skipQuest);
