@@ -542,40 +542,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Show audio indicator
         showAudioIndicator();
         
-        // Try to play immediately
-        const playPromise = celebrationSound.play();
-        
-        if (playPromise !== undefined) {
-            playPromise
-                .then(() => {
-                    console.log('🔊 Audio playing automatically!');
-                })
-                .catch(error => {
-                    console.log('⚠️ Autoplay blocked, waiting for user interaction...');
-                    
-                    // Play on first user interaction with the page
-                    const playOnInteraction = () => {
-                        celebrationSound.play()
-                            .then(() => {
-                                console.log('🔊 Audio playing after user interaction!');
-                            })
-                            .catch(e => console.log('Audio error:', e));
-                        
-                        // Also play occasion music
-                        playOccasionMusic(giftData.occasion);
-                        
-                        // Remove listener after first interaction
-                        document.removeEventListener('click', playOnInteraction);
-                        document.removeEventListener('touchstart', playOnInteraction);
-                        document.removeEventListener('keydown', playOnInteraction);
-                    };
-                    
-                    // Listen for any user interaction
-                    document.addEventListener('click', playOnInteraction, { once: true });
-                    document.addEventListener('touchstart', playOnInteraction, { once: true });
-                    document.addEventListener('keydown', playOnInteraction, { once: true });
-                });
-        }
+        // Play immediately (user has already interacted by touching to open)
+        celebrationSound.play()
+            .then(() => {
+                console.log('🔊 Audio playing!');
+            })
+            .catch(error => {
+                console.log('Audio error:', error);
+            });
         
         // Play occasion-specific music
         setTimeout(() => playOccasionMusic(giftData.occasion), 1000);
@@ -621,19 +595,13 @@ document.addEventListener('DOMContentLoaded', function() {
         bgMusic.volume = 0.4;
         bgMusic.loop = false;
         
-        // Start muted to bypass autoplay restrictions
-        bgMusic.muted = true;
+        // Play immediately (user has already interacted)
         bgMusic.play()
             .then(() => {
-                // Unmute after starting
-                bgMusic.muted = false;
-                console.log('🎵 Background music playing automatically');
+                console.log('🎵 Background music playing');
             })
             .catch(e => {
                 console.log('Background music error:', e.message);
-                // Try unmuted as fallback
-                bgMusic.muted = false;
-                bgMusic.play().catch(err => console.log('Fallback failed:', err));
             });
     }
 });
