@@ -329,8 +329,26 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Set custom image if provided
         const imageContainer = document.getElementById('gift-image-container');
-        if (giftData.image) {
-            imageContainer.innerHTML = `<img src="${giftData.image}" alt="Gift Image">`;
+        if (giftData.image && giftData.image.trim() !== '') {
+            const img = document.createElement('img');
+            img.src = giftData.image;
+            img.alt = 'Gift Image';
+            
+            // Hide container if image fails to load
+            img.onerror = function() {
+                console.log('Image failed to load, hiding container');
+                imageContainer.classList.add('empty');
+                imageContainer.innerHTML = '';
+            };
+            
+            // Show container only if image loads successfully
+            img.onload = function() {
+                console.log('Image loaded successfully');
+                imageContainer.classList.remove('empty');
+            };
+            
+            imageContainer.innerHTML = '';
+            imageContainer.appendChild(img);
         } else {
             imageContainer.classList.add('empty');
         }
@@ -446,9 +464,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Play celebration sound
     function playSound() {
-        // Create audio context for better browser support
+        // Create audio element
         const celebrationSound = new Audio();
-        celebrationSound.volume = 0.6;
         
         // Use working audio sources - check for local file first
         const audioSources = [
@@ -467,41 +484,26 @@ document.addEventListener('DOMContentLoaded', function() {
             celebrationSound.src = audioSources[1];
         };
         
+        // Start muted to bypass autoplay restrictions
+        celebrationSound.muted = true;
+        celebrationSound.volume = 0.6;
+        
         // Show audio indicator
         showAudioIndicator();
         
-        // Try to play immediately
-        const playPromise = celebrationSound.play();
-        
-        if (playPromise !== undefined) {
-            playPromise
-                .then(() => {
-                    console.log('🔊 Audio playing successfully!');
-                })
-                .catch(error => {
-                    console.log('⚠️ Auto-play blocked. Click anywhere to play sound.');
-                    
-                    // Show message to user
-                    showAudioPrompt();
-                    
-                    // Play on any user interaction
-                    const playOnInteraction = () => {
-                        celebrationSound.play()
-                            .then(() => {
-                                console.log('🔊 Audio playing after user interaction');
-                                hideAudioPrompt();
-                            })
-                            .catch(e => console.log('Audio error:', e));
-                        
-                        // Remove listeners after first play
-                        document.removeEventListener('click', playOnInteraction);
-                        document.removeEventListener('touchstart', playOnInteraction);
-                    };
-                    
-                    document.addEventListener('click', playOnInteraction);
-                    document.addEventListener('touchstart', playOnInteraction);
-                });
-        }
+        // Play muted first
+        celebrationSound.play()
+            .then(() => {
+                // Immediately unmute after starting playback
+                celebrationSound.muted = false;
+                console.log('🔊 Audio playing automatically!');
+            })
+            .catch(error => {
+                console.log('Audio autoplay failed:', error);
+                // Try unmuted as fallback
+                celebrationSound.muted = false;
+                celebrationSound.play().catch(e => console.log('Audio error:', e));
+            });
         
         // Play occasion-specific music
         setTimeout(() => playOccasionMusic(giftData.occasion), 1000);
@@ -532,48 +534,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000);
     }
     
-    // Show audio prompt when blocked
-    function showAudioPrompt() {
-        const prompt = document.createElement('div');
-        prompt.id = 'audio-prompt';
-        prompt.innerHTML = `
-            <div style="
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: white;
-                padding: 2rem;
-                border-radius: 15px;
-                box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-                z-index: 10001;
-                text-align: center;
-                max-width: 300px;
-            ">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">🔊</div>
-                <h3 style="color: #667eea; margin-bottom: 0.5rem;">Enable Sound</h3>
-                <p style="color: #666; margin-bottom: 1rem;">Click anywhere to play celebration music!</p>
-                <button onclick="this.parentElement.parentElement.remove()" style="
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                    color: white;
-                    border: none;
-                    padding: 0.75rem 1.5rem;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-weight: 600;
-                ">Got it!</button>
-            </div>
-        `;
-        document.body.appendChild(prompt);
-    }
-    
-    // Hide audio prompt
-    function hideAudioPrompt() {
-        const prompt = document.getElementById('audio-prompt');
-        if (prompt) {
-            prompt.remove();
-        }
-    }
     
     // Play occasion-specific background music
     function playOccasionMusic(occasion) {
@@ -589,8 +549,19 @@ document.addEventListener('DOMContentLoaded', function() {
         bgMusic.volume = 0.4;
         bgMusic.loop = false;
         
+        // Start muted to bypass autoplay restrictions
+        bgMusic.muted = true;
         bgMusic.play()
-            .then(() => console.log('🎵 Background music playing'))
-            .catch(e => console.log('Background music blocked:', e.message));
+            .then(() => {
+                // Unmute after starting
+                bgMusic.muted = false;
+                console.log('🎵 Background music playing automatically');
+            })
+            .catch(e => {
+                console.log('Background music error:', e.message);
+                // Try unmuted as fallback
+                bgMusic.muted = false;
+                bgMusic.play().catch(err => console.log('Fallback failed:', err));
+            });
     }
 });
