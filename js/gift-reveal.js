@@ -259,7 +259,42 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update gift box based on occasion
         updateGiftBoxDesign(giftData.occasion);
         
-        setTimeout(showGift, 3000);
+        // Add "Touch to Open" prompt
+        addTouchToOpenPrompt();
+    }
+    
+    // Add interactive "Touch to Open" prompt
+    function addTouchToOpenPrompt() {
+        const openingContent = document.querySelector('.opening-content');
+        const touchPrompt = document.createElement('div');
+        touchPrompt.className = 'touch-to-open-prompt';
+        touchPrompt.innerHTML = `
+            <div class="touch-prompt-content">
+                <div class="touch-icon">👆</div>
+                <h3>Touch to Open</h3>
+                <p>Tap anywhere to reveal your gift</p>
+            </div>
+        `;
+        openingContent.appendChild(touchPrompt);
+        
+        // Make entire screen clickable
+        const openGiftHandler = (e) => {
+            // Remove the prompt
+            touchPrompt.remove();
+            
+            // Show the gift and play audio
+            showGift();
+            
+            // Remove the event listeners
+            document.removeEventListener('click', openGiftHandler);
+            document.removeEventListener('touchstart', openGiftHandler);
+            document.removeEventListener('keydown', openGiftHandler);
+        };
+        
+        // Listen for any interaction
+        document.addEventListener('click', openGiftHandler);
+        document.addEventListener('touchstart', openGiftHandler);
+        document.addEventListener('keydown', openGiftHandler);
     }
     
     // Update gift box design based on occasion
