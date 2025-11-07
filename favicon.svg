@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Gift box body -->
+  <rect x="20" y="40" width="60" height="50" fill="#667eea" rx="5"/>
+  
+  <!-- Gift box lid -->
+  <rect x="15" y="30" width="70" height="15" fill="#764ba2" rx="5"/>
+  
+  <!-- Ribbon vertical -->
+  <rect x="45" y="30" width="10" height="60" fill="#ffd93d"/>
+  
+  <!-- Ribbon horizontal -->
+  <rect x="20" y="60" width="60" height="10" fill="#ffd93d"/>
+  
+  <!-- Bow -->
+  <circle cx="50" cy="30" r="8" fill="#ff6b6b"/>
+  <circle cx="42" cy="25" r="6" fill="#ff8787"/>
+  <circle cx="58" cy="25" r="6" fill="#ff8787"/>
+</svg>

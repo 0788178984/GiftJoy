@@ -496,6 +496,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Try local file first, fallback to CDN
         celebrationSound.src = audioSources[0];
+        celebrationSound.volume = 0.6;
         
         // If local file fails, try CDN
         celebrationSound.onerror = () => {
@@ -503,26 +504,43 @@ document.addEventListener('DOMContentLoaded', function() {
             celebrationSound.src = audioSources[1];
         };
         
-        // Start muted to bypass autoplay restrictions
-        celebrationSound.muted = true;
-        celebrationSound.volume = 0.6;
-        
         // Show audio indicator
         showAudioIndicator();
         
-        // Play muted first
-        celebrationSound.play()
-            .then(() => {
-                // Immediately unmute after starting playback
-                celebrationSound.muted = false;
-                console.log('🔊 Audio playing automatically!');
-            })
-            .catch(error => {
-                console.log('Audio autoplay failed:', error);
-                // Try unmuted as fallback
-                celebrationSound.muted = false;
-                celebrationSound.play().catch(e => console.log('Audio error:', e));
-            });
+        // Try to play immediately
+        const playPromise = celebrationSound.play();
+        
+        if (playPromise !== undefined) {
+            playPromise
+                .then(() => {
+                    console.log('🔊 Audio playing automatically!');
+                })
+                .catch(error => {
+                    console.log('⚠️ Autoplay blocked, waiting for user interaction...');
+                    
+                    // Play on first user interaction with the page
+                    const playOnInteraction = () => {
+                        celebrationSound.play()
+                            .then(() => {
+                                console.log('🔊 Audio playing after user interaction!');
+                            })
+                            .catch(e => console.log('Audio error:', e));
+                        
+                        // Also play occasion music
+                        playOccasionMusic(giftData.occasion);
+                        
+                        // Remove listener after first interaction
+                        document.removeEventListener('click', playOnInteraction);
+                        document.removeEventListener('touchstart', playOnInteraction);
+                        document.removeEventListener('keydown', playOnInteraction);
+                    };
+                    
+                    // Listen for any user interaction
+                    document.addEventListener('click', playOnInteraction, { once: true });
+                    document.addEventListener('touchstart', playOnInteraction, { once: true });
+                    document.addEventListener('keydown', playOnInteraction, { once: true });
+                });
+        }
         
         // Play occasion-specific music
         setTimeout(() => playOccasionMusic(giftData.occasion), 1000);
