@@ -436,7 +436,10 @@ body {
     margin: 2rem 0;
     border-radius: 15px;
     overflow: hidden;
-    max-height: 400px;
+    max-height: 500px;
+    display: block;
+    background: #f8f9fa;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .gift-image-container img {
@@ -444,10 +447,12 @@ body {
     height: auto;
     display: block;
     border-radius: 15px;
+    object-fit: contain;
+    max-height: 500px;
 }
 
 .gift-image-container.empty {
-    display: none;
+    display: none !important;
 }
 
 .gift-message {

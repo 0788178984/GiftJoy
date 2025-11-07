@@ -330,26 +330,37 @@ document.addEventListener('DOMContentLoaded', function() {
         // Set custom image if provided
         const imageContainer = document.getElementById('gift-image-container');
         if (giftData.image && giftData.image.trim() !== '') {
+            console.log('📷 Image data found, length:', giftData.image.length);
+            
+            // Remove empty class first
+            imageContainer.classList.remove('empty');
+            
             const img = document.createElement('img');
             img.src = giftData.image;
             img.alt = 'Gift Image';
+            img.style.width = '100%';
+            img.style.height = 'auto';
+            img.style.borderRadius = '15px';
+            img.style.display = 'block';
             
             // Hide container if image fails to load
             img.onerror = function() {
-                console.log('Image failed to load, hiding container');
+                console.error('❌ Image failed to load');
+                console.log('Image src preview:', giftData.image.substring(0, 100));
                 imageContainer.classList.add('empty');
                 imageContainer.innerHTML = '';
             };
             
             // Show container only if image loads successfully
             img.onload = function() {
-                console.log('Image loaded successfully');
+                console.log('✅ Image loaded successfully!');
                 imageContainer.classList.remove('empty');
             };
             
             imageContainer.innerHTML = '';
             imageContainer.appendChild(img);
         } else {
+            console.log('ℹ️ No image data provided');
             imageContainer.classList.add('empty');
         }
         
