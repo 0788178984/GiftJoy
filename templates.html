@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gift Templates - GiftJoy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .templates-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6rem 5% 4rem;
+            text-align: center;
+        }
+
+        .templates-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .templates-hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .templates-container {
+            padding: 4rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            background: white;
+            color: #667eea;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-tab:hover,
+        .filter-tab.active {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .template-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .template-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .template-preview {
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .template-info {
+            padding: 1.5rem;
+        }
+
+        .template-info h3 {
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        .template-info p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .template-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .template-tag {
+            background: #f0f0f0;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .use-template-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .use-template-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .back-home a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-home a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .templates-hero h1 {
+                font-size: 2rem;
+            }
+
+            .templates-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header>
+            <div class="logo">GiftJoy</div>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="templates.html">Templates</a>
+                <a href="index.html#how-it-works">How It Works</a>
+            </nav>
+        </header>
+
+        <section class="templates-hero">
+            <h1>🎨 Gift Templates Gallery</h1>
+            <p>Choose from our beautiful collection of pre-designed gift templates</p>
+        </section>
+
+        <div class="templates-container">
+            <div class="filter-tabs">
+                <div class="filter-tab active" data-filter="all">All Templates</div>
+                <div class="filter-tab" data-filter="birthday">Birthday</div>
+                <div class="filter-tab" data-filter="love">Love & Romance</div>
+                <div class="filter-tab" data-filter="celebration">Celebration</div>
+                <div class="filter-tab" data-filter="holiday">Holidays</div>
+                <div class="filter-tab" data-filter="thank-you">Thank You</div>
+            </div>
+
+            <div class="templates-grid" id="templates-grid">
+                <!-- Templates will be loaded here -->
+            </div>
+
+            <div class="back-home">
+                <a href="index.html">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const templates = [
+            {
+                id: 1,
+                name: 'Birthday Celebration',
+                icon: '🎂',
+                description: 'Perfect for birthday wishes with cake and candles',
+                category: 'birthday',
+                tags: ['birthday', 'celebration', 'cake'],
+                gradient: 'linear-gradient(135deg, #FF9A9E 0%, #FAD0C4 100%)'
+            },
+            {
+                id: 2,
+                name: 'Love Letter',
+                icon: '💌',
+                description: 'Express your love with a romantic letter',
+                category: 'love',
+                tags: ['love', 'romance', 'valentine'],
+                gradient: 'linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%)'
+            },
+            {
+                id: 3,
+                name: 'Christmas Joy',
+                icon: '🎄',
+                description: 'Spread holiday cheer with festive decorations',
+                category: 'holiday',
+                tags: ['christmas', 'holiday', 'winter'],
+                gradient: 'linear-gradient(135deg, #2BC0E4 0%, #EAECC6 100%)'
+            },
+            {
+                id: 4,
+                name: 'Easter Surprise',
+                icon: '🐰',
+                description: 'Hoppy Easter wishes with bunnies and eggs',
+                category: 'holiday',
+                tags: ['easter', 'spring', 'holiday'],
+                gradient: 'linear-gradient(135deg, #A1FFCE 0%, #FAFFD1 100%)'
+            },
+            {
+                id: 5,
+                name: 'Thank You Card',
+                icon: '🙏',
+                description: 'Show gratitude with a heartfelt thank you',
+                category: 'thank-you',
+                tags: ['gratitude', 'appreciation', 'thanks'],
+                gradient: 'linear-gradient(135deg, #00B4DB 0%, #0083B0 100%)'
+            },
+            {
+                id: 6,
+                name: 'Congratulations',
+                icon: '🎉',
+                description: 'Celebrate achievements and milestones',
+                category: 'celebration',
+                tags: ['congrats', 'achievement', 'success'],
+                gradient: 'linear-gradient(135deg, #F093FB 0%, #F5576C 100%)'
+            },
+            {
+                id: 7,
+                name: 'Anniversary Love',
+                icon: '💝',
+                description: 'Celebrate years of love and memories',
+                category: 'love',
+                tags: ['anniversary', 'love', 'relationship'],
+                gradient: 'linear-gradient(135deg, #6A11CB 0%, #2575FC 100%)'
+            },
+            {
+                id: 8,
+                name: 'Graduation Success',
+                icon: '🎓',
+                description: 'Honor academic achievements',
+                category: 'celebration',
+                tags: ['graduation', 'education', 'achievement'],
+                gradient: 'linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%)'
+            },
+            {
+                id: 9,
+                name: 'New Baby',
+                icon: '👶',
+                description: 'Welcome the new arrival with joy',
+                category: 'celebration',
+                tags: ['baby', 'newborn', 'family'],
+                gradient: 'linear-gradient(135deg, #FFD3A5 0%, #FD6585 100%)'
+            },
+            {
+                id: 10,
+                name: 'Get Well Soon',
+                icon: '🌸',
+                description: 'Send healing wishes and support',
+                category: 'thank-you',
+                tags: ['health', 'support', 'care'],
+                gradient: 'linear-gradient(135deg, #FCCF31 0%, #F55555 100%)'
+            },
+            {
+                id: 11,
+                name: 'Friendship',
+                icon: '🤝',
+                description: 'Celebrate your special bond',
+                category: 'thank-you',
+                tags: ['friendship', 'friends', 'bond'],
+                gradient: 'linear-gradient(135deg, #FA709A 0%, #FEE140 100%)'
+            },
+            {
+                id: 12,
+                name: 'Good Luck',
+                icon: '🍀',
+                description: 'Wish them the best in their endeavors',
+                category: 'celebration',
+                tags: ['luck', 'wishes', 'support'],
+                gradient: 'linear-gradient(135deg, #30E8BF 0%, #FF8235 100%)'
+            }
+        ];
+
+        const grid = document.getElementById('templates-grid');
+        const filterTabs = document.querySelectorAll('.filter-tab');
+        let currentFilter = 'all';
+
+        function renderTemplates(filter = 'all') {
+            const filtered = filter === 'all' 
+                ? templates 
+                : templates.filter(t => t.category === filter);
+
+            grid.innerHTML = filtered.map(template => `
+                <div class="template-card" data-template-id="${template.id}">
+                    <div class="template-preview" style="background: ${template.gradient}">
+                        <div style="font-size: 5rem;">${template.icon}</div>
+                    </div>
+                    <div class="template-info">
+                        <h3>${template.name}</h3>
+                        <p>${template.description}</p>
+                        <div class="template-tags">
+                            ${template.tags.map(tag => `<span class="template-tag">${tag}</span>`).join('')}
+                        </div>
+                        <button class="use-template-btn" onclick="useTemplate(${template.id})">
+                            Use This Template
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                filterTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const filter = tab.getAttribute('data-filter');
+                renderTemplates(filter);
+            });
+        });
+
+        function useTemplate(templateId) {
+            const template = templates.find(t => t.id === templateId);
+            if (template) {
+                // Store template selection
+                localStorage.setItem('selectedTemplate', JSON.stringify(template));
+                // Redirect to main page
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Initial render
+        renderTemplates();
+    </script>
+</body>
+</html>

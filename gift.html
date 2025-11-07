@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Gift Awaits! - GiftJoy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/gift-reveal.css">
+</head>
+<body>
+    <div class="gift-reveal-container">
+        <!-- Quest/Puzzle Section -->
+        <div id="quest-section" class="quest-section active">
+            <div class="quest-content">
+                <h1>🎁 You've Received a Gift!</h1>
+                <p class="quest-message">But first, solve this quick puzzle to unlock your surprise...</p>
+                
+                <div class="puzzle-container">
+                    <div id="puzzle-type" class="puzzle-box">
+                        <!-- Puzzle will be dynamically loaded -->
+                    </div>
+                </div>
+                
+                <button id="skip-quest" class="btn-skip">Skip Quest</button>
+            </div>
+        </div>
+
+        <!-- Gift Opening Animation Section -->
+        <div id="opening-section" class="opening-section">
+            <div class="opening-content">
+                <h2>Opening your gift...</h2>
+                <div class="gift-box-animation">
+                    <div class="animated-gift-box">
+                        <div class="box-lid"></div>
+                        <div class="box-body"></div>
+                        <div class="box-ribbon"></div>
+                        <div class="box-ribbon-v"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gift Reveal Section -->
+        <div id="reveal-section" class="reveal-section">
+            <div class="confetti-container" id="confetti"></div>
+            
+            <div class="gift-card">
+                <div class="gift-header">
+                    <div class="gift-icon" id="gift-icon">🎉</div>
+                    <h1 id="gift-title">Happy Birthday!</h1>
+                    <p class="recipient-name">Dear <span id="recipient-name">Friend</span>,</p>
+                </div>
+                
+                <div class="gift-image-container" id="gift-image-container">
+                    <!-- Custom image will be displayed here -->
+                </div>
+                
+                <div class="gift-message">
+                    <p id="gift-message">Wishing you all the happiness in the world!</p>
+                </div>
+                
+                <div class="gift-footer">
+                    <p class="sender-name">From: <span id="sender-name">Someone Special</span></p>
+                    <p class="created-with">Created with ❤️ using GiftJoy</p>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="create-own-gift" class="btn-primary">
+                        <i class="fas fa-gift"></i> Create Your Own Gift
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/gift-reveal.js"></script>
+</body>
+</html>

@@ -8,8 +8,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const giftTypeOptions = document.querySelectorAll('.gift-type-option');
     const occasionCards = document.querySelectorAll('.occasion-card');
     
-    // Current gift type
+    // Current gift type and uploaded image
     let selectedGiftType = 'gift-box';
+    let uploadedImage = null;
     
     // Audio elements for different occasions
     const audioElements = {
@@ -184,10 +185,19 @@ document.addEventListener('DOMContentLoaded', function() {
             case 'heart':
                 giftPreview.innerHTML = `
                     <div class="heart-container">
-                        <div class="heart">
-                            <div class="pulse"></div>
+                        <div class="form-group">
+                            <label for="sender-name-input">Your Name</label>
+                            <input type="text" id="sender-name-input" placeholder="Enter your name">
                         </div>
-                        <div class="heart-beat"></div>
+                        <div class="form-group">
+                            <label for="message">Your Message</label>
+                            <textarea id="message" rows="4" placeholder="Write your heartfelt message here..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="gift-image">Add a Photo (Optional)</label>
+                            <input type="file" id="gift-image" accept="image/*">
+                            <div id="image-preview" class="image-preview"></div>
+                        </div>
                     </div>
                 `;
                 break;
