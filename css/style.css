@@ -940,11 +940,15 @@ footer {
 
 @media (max-width: 576px) {
     h1 {
-        font-size: 1.8rem;
-        line-height: 1.3;
+        font-size: 2rem !important;
+        line-height: 1.4 !important;
         word-wrap: break-word;
         overflow-wrap: break-word;
-        padding: 0 1rem;
+        padding: 0 !important;
+        margin-bottom: 1rem !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
     
     h2 {
@@ -952,16 +956,19 @@ footer {
     }
     
     .hero {
-        padding: 2rem 3%;
+        padding: 3rem 5% !important;
+        overflow: visible !important;
     }
     
     .hero-content {
-        padding: 0 0.5rem;
+        padding: 0 !important;
+        max-width: 100% !important;
+        overflow: visible !important;
     }
     
     .hero-content p {
         font-size: 0.95rem;
-        padding: 0 0.5rem;
+        padding: 0 !important;
     }
     
     .gift-card-preview {
@@ -979,12 +986,11 @@ footer {
 /* Extra small devices */
 @media (max-width: 400px) {
     h1 {
-        font-size: 1.5rem;
-        padding: 0 0.5rem;
+        font-size: 1.75rem !important;
     }
     
     .hero {
-        padding: 1.5rem 2%;
+        padding: 2.5rem 4% !important;
     }
     
     .hero-content p {
