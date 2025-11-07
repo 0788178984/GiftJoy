@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GiftJoy - Send Beautiful Surprises</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app">
+        <header>
+            <div class="logo">GiftJoy</div>
+            <nav>
+                <a href="#home">Home</a>
+                <a href="#occasions">Occasions</a>
+                <a href="#how-it-works">How It Works</a>
+                <button class="btn-primary">Create Gift</button>
+            </nav>
+        </header>
+
+        <main>
+            <section id="hero" class="hero">
+                <div class="hero-content">
+                    <h1>Create Magical Moments</h1>
+                    <p>Send beautiful, personalized digital gifts for any occasion that will make your loved ones smile.</p>
+                    <button class="btn-primary btn-large">Get Started</button>
+                </div>
+                <div class="hero-image">
+                    <div class="gift-card-preview">
+                        <!-- Animated gift card will be here -->
+                    </div>
+                </div>
+            </section>
+
+            <section id="occasions" class="occasions">
+                <h2>Perfect for Every Occasion</h2>
+                <div class="occasion-grid">
+                    <div class="occasion-card" data-occasion="birthday">
+                        <div class="icon">🎂</div>
+                        <h3>Birthdays</h3>
+                        <p>Make their special day unforgettable</p>
+                    </div>
+                    <div class="occasion-card" data-occasion="christmas">
+                        <div class="icon">🎄</div>
+                        <h3>Christmas</h3>
+                        <p>Spread holiday cheer</p>
+                    </div>
+                    <div class="occasion-card" data-occasion="easter">
+                        <div class="icon">🐰</div>
+                        <h3>Easter</h3>
+                        <p>Hop into the celebration</p>
+                    </div>
+                    <div class="occasion-card" data-occasion="valentine">
+                        <div class="icon">❤️</div>
+                        <h3>Valentine's</h3>
+                        <p>Express your love</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="how-it-works" class="how-it-works">
+                <h2>How It Works</h2>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3>Choose a Design</h3>
+                        <p>Select from our beautiful templates</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3>Personalize</h3>
+                        <p>Add your message and photos</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3>Share</h3>
+                        <p>Send via email, message, or social media</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>GiftJoy</h4>
+                    <p>Creating magical moments, one gift at a time.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="#">About Us</a>
+                    <a href="#">Contact</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect With Us</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 GiftJoy. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <div id="gift-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Create Your Gift</h2>
+            <div class="gift-form">
+                <div class="form-group">
+                    <label for="occasion">Occasion</label>
+                    <select id="occasion" name="occasion">
+                        <option value="birthday">Birthday</option>
+                        <option value="christmas">Christmas</option>
+                        <option value="easter">Easter</option>
+                        <option value="valentine">Valentine's Day</option>
+                        <option value="anniversary">Anniversary</option>
+                        <option value="thankyou">Thank You</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name">Recipient's Name</label>
+                    <input type="text" id="recipient-name" placeholder="Enter name">
+                </div>
+                <div class="form-group">
+                    <label for="message">Your Message</label>
+                    <textarea id="message" rows="4" placeholder="Write your heartfelt message here..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Choose a Theme</label>
+                    <div class="theme-options">
+                        <div class="theme-option" data-theme="classic">Classic</div>
+                        <div class="theme-option" data-theme="modern">Modern</div>
+                        <div class="theme-option" data-theme="elegant">Elegant</div>
+                        <div class="theme-option" data-theme="fun">Fun</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Choose Gift Type</label>
+                    <div class="gift-type-options">
+                        <div class="gift-type-option" data-gift-type="gift-box">
+                            <div class="gift-icon">🎁</div>
+                            <span>Gift Box</span>
+                        </div>
+                        <div class="gift-type-option" data-gift-type="love-letter">
+                            <div class="gift-icon">💌</div>
+                            <span>Love Letter</span>
+                        </div>
+                        <div class="gift-type-option" data-gift-type="birthday">
+                            <div class="gift-icon">🎂</div>
+                            <span>Happy Birthday</span>
+                        </div>
+                        <div class="gift-type-option" data-gift-type="heart">
+                            <div class="gift-icon">💖</div>
+                            <span>Your Heart</span>
+                        </div>
+                        <div class="gift-type-option" data-gift-type="egg">
+                            <div class="gift-icon">🥚</div>
+                            <span>Surprise Egg</span>
+                        </div>
+                        <div class="gift-type-option" data-gift-type="bubble-wrap">
+                            <div class="gift-icon">🔘</div>
+                            <span>Bubble Wrap</span>
+                        </div>
+                        <div class="gift-type-option" data-gift-type="scratch">
+                            <div class="gift-icon">✋</div>
+                            <span>Scratch Card</span>
+                        </div>
+                    </div>
+                </div>
+                <button id="preview-gift" class="btn-primary btn-large">Preview Gift</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
