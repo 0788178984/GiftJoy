@@ -176,6 +176,13 @@ main {
     transform: perspective(1000px) rotateY(0deg);
 }
 
+.gift-preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
 /* Occasions Section */
 .occasions {
     padding: 6rem 5%;
