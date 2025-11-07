@@ -31,8 +31,9 @@ document.addEventListener('DOMContentLoaded', function() {
     init();
     
     function init() {
-        loadPuzzle(currentPuzzle);
+        // Skip puzzle and go directly to opening animation
         setupEventListeners();
+        showOpening();
     }
     
     function setupEventListeners() {
