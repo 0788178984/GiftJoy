@@ -20,6 +20,33 @@ document.addEventListener('DOMContentLoaded', function() {
     function init() {
         setupEventListeners();
         animateElementsOnScroll();
+        checkStorageUsage();
+    }
+    
+    // Check localStorage usage and warn if getting full
+    function checkStorageUsage() {
+        try {
+            let totalSize = 0;
+            for (let key in localStorage) {
+                if (localStorage.hasOwnProperty(key)) {
+                    totalSize += localStorage[key].length + key.length;
+                }
+            }
+            
+            // Convert to KB
+            const sizeInKB = (totalSize / 1024).toFixed(2);
+            const estimatedLimit = 5120; // ~5MB in KB
+            const percentUsed = ((totalSize / 1024) / estimatedLimit * 100).toFixed(1);
+            
+            console.log(`📦 Storage Usage: ${sizeInKB} KB / ~${estimatedLimit} KB (${percentUsed}%)`);
+            
+            // Warn if over 80% full
+            if (percentUsed > 80) {
+                console.warn('⚠️ Storage is getting full! Consider clearing old gifts.');
+            }
+        } catch (e) {
+            console.error('Could not check storage usage:', e);
+        }
     }
     
     // Set up event listeners
@@ -75,18 +102,68 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Handle image upload
+    // Handle image upload with compression
     function handleImageUpload(e) {
         const file = e.target.files[0];
         if (file && file.type.startsWith('image/')) {
+            // Check file size (limit to 2MB before compression)
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Image is too large. Please choose an image smaller than 2MB.');
+                e.target.value = '';
+                return;
+            }
+            
             const reader = new FileReader();
             reader.onload = function(event) {
-                uploadedImage = event.target.result;
-                imagePreview.innerHTML = `<img src="${uploadedImage}" alt="Preview">`;
-                imagePreview.classList.add('active');
+                // Compress the image before storing
+                compressImage(event.target.result, (compressedImage) => {
+                    uploadedImage = compressedImage;
+                    imagePreview.innerHTML = `<img src="${uploadedImage}" alt="Preview">`;
+                    imagePreview.classList.add('active');
+                });
             };
             reader.readAsDataURL(file);
         }
+    }
+    
+    // Compress image to reduce storage size
+    function compressImage(dataUrl, callback) {
+        const img = new Image();
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set max dimensions
+            const MAX_WIDTH = 800;
+            const MAX_HEIGHT = 800;
+            
+            let width = img.width;
+            let height = img.height;
+            
+            // Calculate new dimensions
+            if (width > height) {
+                if (width > MAX_WIDTH) {
+                    height *= MAX_WIDTH / width;
+                    width = MAX_WIDTH;
+                }
+            } else {
+                if (height > MAX_HEIGHT) {
+                    width *= MAX_HEIGHT / height;
+                    height = MAX_HEIGHT;
+                }
+            }
+            
+            canvas.width = width;
+            canvas.height = height;
+            
+            // Draw and compress
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // Convert to JPEG with 0.7 quality for better compression
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+            callback(compressedDataUrl);
+        };
+        img.src = dataUrl;
     }
     
     // Open modal with optional occasion pre-selection
@@ -117,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Create and display the gift
-    function createGift() {
+    async function createGift() {
         const occasion = document.getElementById('occasion')?.value || 'birthday';
         const recipientName = document.getElementById('recipient-name')?.value || 'Friend';
         const senderName = document.getElementById('sender-name-input')?.value || 'Someone Special';
@@ -140,8 +217,15 @@ document.addEventListener('DOMContentLoaded', function() {
             createdAt: new Date().toISOString()
         };
         
-        // Save to localStorage
-        localStorage.setItem(`gift_${giftId}`, JSON.stringify(giftData));
+        // Save to IndexedDB (much larger storage capacity)
+        try {
+            await window.giftStorage.saveGift(giftData);
+            console.log('✅ Gift saved to IndexedDB');
+        } catch (e) {
+            console.error('Error saving gift:', e);
+            alert('❌ Failed to save gift. Please try again.');
+            return;
+        }
         
         // Generate gift link
         const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '');
@@ -295,3 +379,31 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Global function to clear old gifts
+async function clearOldGifts() {
+    try {
+        const gifts = await window.giftStorage.getAllGifts();
+        
+        if (gifts.length === 0) {
+            alert('No gifts found in storage.');
+            return;
+        }
+        
+        const message = `Found ${gifts.length} gift(s) in storage.\n\nClearing these will free up space for new gifts.\n\nDo you want to continue?`;
+        
+        if (confirm(message)) {
+            await window.giftStorage.clearAllGifts();
+            alert(`✅ Successfully cleared ${gifts.length} gift(s)!\n\nYou can now create new gifts.`);
+            
+            // Show updated storage info
+            const estimate = await window.giftStorage.getStorageEstimate();
+            if (estimate) {
+                console.log('💾 Storage Available:', estimate.available);
+            }
+        }
+    } catch (e) {
+        console.error('Error clearing gifts:', e);
+        alert('Failed to clear gifts. Please try again.');
+    }
+}

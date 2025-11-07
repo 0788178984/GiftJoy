@@ -10,11 +10,20 @@ document.addEventListener('DOMContentLoaded', function() {
         giftId: urlParams.get('id') || null
     };
 
-    // If gift ID exists, try to load from localStorage
+    // If gift ID exists, try to load from IndexedDB
     if (giftData.giftId) {
-        const savedGift = localStorage.getItem(`gift_${giftData.giftId}`);
-        if (savedGift) {
-            Object.assign(giftData, JSON.parse(savedGift));
+        loadGiftData(giftData.giftId);
+    }
+    
+    async function loadGiftData(giftId) {
+        try {
+            const savedGift = await window.giftStorage.getGift(giftId);
+            if (savedGift) {
+                Object.assign(giftData, savedGift);
+                console.log('✅ Gift loaded from IndexedDB');
+            }
+        } catch (e) {
+            console.error('Error loading gift:', e);
         }
     }
 
@@ -437,56 +446,143 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Play celebration sound
     function playSound() {
-        // Try multiple audio sources for better compatibility
+        // Create audio context for better browser support
+        const celebrationSound = new Audio();
+        celebrationSound.volume = 0.6;
+        
+        // Use working audio sources
         const audioSources = [
-            'https://cdn.pixabay.com/audio/2022/03/10/audio_c8c6c1e57f.mp3', // Celebration sound
-            'https://cdn.pixabay.com/audio/2021/08/04/audio_12b0c7443c.mp3', // Happy birthday
-            'https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3'
+            'https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3', // Party horn
+            'https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3', // Celebration
+            'https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'  // Confetti pop
         ];
         
-        const audio = new Audio(audioSources[0]);
-        audio.volume = 0.5;
+        celebrationSound.src = audioSources[0];
         
-        // Try to play with user interaction fallback
-        const playPromise = audio.play();
+        // Show audio indicator
+        showAudioIndicator();
+        
+        // Try to play immediately
+        const playPromise = celebrationSound.play();
         
         if (playPromise !== undefined) {
             playPromise
                 .then(() => {
-                    console.log('Audio playing successfully');
+                    console.log('🔊 Audio playing successfully!');
                 })
                 .catch(error => {
-                    console.log('Auto-play prevented, adding click listener');
-                    // Add one-time click listener to play sound
-                    document.addEventListener('click', function playOnClick() {
-                        audio.play();
-                        document.removeEventListener('click', playOnClick);
-                    }, { once: true });
+                    console.log('⚠️ Auto-play blocked. Click anywhere to play sound.');
+                    
+                    // Show message to user
+                    showAudioPrompt();
+                    
+                    // Play on any user interaction
+                    const playOnInteraction = () => {
+                        celebrationSound.play()
+                            .then(() => {
+                                console.log('🔊 Audio playing after user interaction');
+                                hideAudioPrompt();
+                            })
+                            .catch(e => console.log('Audio error:', e));
+                        
+                        // Remove listeners after first play
+                        document.removeEventListener('click', playOnInteraction);
+                        document.removeEventListener('touchstart', playOnInteraction);
+                    };
+                    
+                    document.addEventListener('click', playOnInteraction);
+                    document.addEventListener('touchstart', playOnInteraction);
                 });
         }
         
-        // Also play occasion-specific sound
-        playOccasionSound(giftData.occasion);
+        // Play occasion-specific music
+        setTimeout(() => playOccasionMusic(giftData.occasion), 1000);
+    }
+    
+    // Show audio indicator
+    function showAudioIndicator() {
+        const indicator = document.createElement('div');
+        indicator.id = 'audio-indicator';
+        indicator.innerHTML = '🔊';
+        indicator.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            z-index: 10000;
+            animation: pulse 1s ease infinite;
+            background: white;
+            padding: 10px;
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        `;
+        document.body.appendChild(indicator);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            indicator.remove();
+        }, 3000);
+    }
+    
+    // Show audio prompt when blocked
+    function showAudioPrompt() {
+        const prompt = document.createElement('div');
+        prompt.id = 'audio-prompt';
+        prompt.innerHTML = `
+            <div style="
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 2rem;
+                border-radius: 15px;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+                z-index: 10001;
+                text-align: center;
+                max-width: 300px;
+            ">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🔊</div>
+                <h3 style="color: #667eea; margin-bottom: 0.5rem;">Enable Sound</h3>
+                <p style="color: #666; margin-bottom: 1rem;">Click anywhere to play celebration music!</p>
+                <button onclick="this.parentElement.parentElement.remove()" style="
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    border: none;
+                    padding: 0.75rem 1.5rem;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: 600;
+                ">Got it!</button>
+            </div>
+        `;
+        document.body.appendChild(prompt);
+    }
+    
+    // Hide audio prompt
+    function hideAudioPrompt() {
+        const prompt = document.getElementById('audio-prompt');
+        if (prompt) {
+            prompt.remove();
+        }
     }
     
     // Play occasion-specific background music
-    function playOccasionSound(occasion) {
-        const occasionSounds = {
-            birthday: 'https://cdn.pixabay.com/audio/2022/03/24/audio_c8b4c7c9b5.mp3',
-            christmas: 'https://cdn.pixabay.com/audio/2021/11/23/audio_d0c8c8c9d8.mp3',
-            valentine: 'https://cdn.pixabay.com/audio/2022/03/15/audio_e8e8e8e8e8.mp3'
+    function playOccasionMusic(occasion) {
+        const musicSources = {
+            birthday: 'https://assets.mixkit.co/active_storage/sfx/2997/2997-preview.mp3',
+            christmas: 'https://assets.mixkit.co/active_storage/sfx/2995/2995-preview.mp3',
+            valentine: 'https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3',
+            anniversary: 'https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3'
         };
         
-        if (occasionSounds[occasion]) {
-            const bgMusic = new Audio(occasionSounds[occasion]);
-            bgMusic.volume = 0.3;
-            bgMusic.loop = false;
-            
-            setTimeout(() => {
-                bgMusic.play().catch(e => {
-                    console.log('Background music play prevented:', e);
-                });
-            }, 500);
-        }
+        const musicUrl = musicSources[occasion] || musicSources.birthday;
+        const bgMusic = new Audio(musicUrl);
+        bgMusic.volume = 0.4;
+        bgMusic.loop = false;
+        
+        bgMusic.play()
+            .then(() => console.log('🎵 Background music playing'))
+            .catch(e => console.log('Background music blocked:', e.message));
     }
 });
