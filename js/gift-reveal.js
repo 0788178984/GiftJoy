@@ -450,14 +450,22 @@ document.addEventListener('DOMContentLoaded', function() {
         const celebrationSound = new Audio();
         celebrationSound.volume = 0.6;
         
-        // Use working audio sources
+        // Use working audio sources - check for local file first
         const audioSources = [
+            'audio/ordinary.mp3', // Local ordinary sound
             'https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3', // Party horn
             'https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3', // Celebration
             'https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'  // Confetti pop
         ];
         
+        // Try local file first, fallback to CDN
         celebrationSound.src = audioSources[0];
+        
+        // If local file fails, try CDN
+        celebrationSound.onerror = () => {
+            console.log('Local audio not found, using CDN');
+            celebrationSound.src = audioSources[1];
+        };
         
         // Show audio indicator
         showAudioIndicator();
