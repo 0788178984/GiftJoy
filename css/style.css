@@ -22,6 +22,8 @@ body {
     color: var(--text-color);
     background-color: #f9f9f9;
     overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
 }
 
 /* Typography */
@@ -38,6 +40,9 @@ h1 {
     background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 1.5rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
 }
 
 h2 {
@@ -62,6 +67,8 @@ h2::after {
 p {
     margin-bottom: 1.5rem;
     color: var(--text-light);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 /* Buttons */
@@ -105,8 +112,10 @@ header {
     box-shadow: var(--shadow);
     position: fixed;
     width: 100%;
+    max-width: 100vw;
     top: 0;
     z-index: 1000;
+    box-sizing: border-box;
 }
 
 .logo {
@@ -116,14 +125,41 @@ header {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    flex-shrink: 0;
+}
+
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    padding: 0.5rem;
+    background: none;
+    border: none;
+}
+
+.menu-toggle span {
+    width: 25px;
+    height: 3px;
+    background: var(--primary-color);
+    margin: 3px 0;
+    transition: 0.3s;
+    border-radius: 2px;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 nav a {
     color: var(--text-color);
     text-decoration: none;
-    margin-left: 2rem;
+    margin-left: 1rem;
     font-weight: 500;
     transition: var(--transition);
+    white-space: nowrap;
 }
 
 nav a:hover {
@@ -135,14 +171,25 @@ main {
     margin-top: 80px;
 }
 
+@media (max-width: 768px) {
+    main {
+        margin-top: 70px;
+    }
+}
+
 /* Hero Section */
 .hero {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 5rem 10%;
+    padding: 5rem 5%;
     background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
     min-height: 80vh;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    gap: 2rem;
 }
 
 .hero-content {
@@ -151,6 +198,8 @@ main {
     animation: fadeInLeft 1s ease;
     overflow: visible;
     width: 100%;
+    padding-right: 2rem;
+    box-sizing: border-box;
 }
 
 .hero-image {
@@ -912,24 +961,52 @@ footer {
 
 @media (max-width: 768px) {
     header {
-        flex-direction: column;
-        padding: 1rem 5%;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 1rem 4%;
+    }
+    
+    .menu-toggle {
+        display: flex;
     }
     
     nav {
-        margin-top: 1rem;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 1rem;
+        position: fixed;
+        top: 60px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 60px);
+        background: white;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 2rem 0;
+        transition: left 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 999;
+        gap: 0;
+    }
+    
+    nav.active {
+        left: 0;
     }
     
     nav a {
-        margin: 0.5rem;
+        margin: 0.8rem 0;
+        font-size: 1.1rem;
+        width: 80%;
+        text-align: center;
+        padding: 0.8rem;
+    }
+    
+    nav .btn-primary {
+        margin-top: 1rem;
+        width: 80%;
     }
     
     .btn-primary {
-        padding: 0.6rem 1.5rem;
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
     }
     
     .modal-content {
@@ -938,62 +1015,96 @@ footer {
     }
     
     h1 {
-        font-size: 2.3rem !important;
+        font-size: 1.8rem !important;
         line-height: 1.3 !important;
+        padding-right: 0 !important;
+        margin-bottom: 1.2rem !important;
     }
     
     .hero {
-        padding: 3rem 5% !important;
+        padding: 3rem 4% !important;
+        flex-direction: column;
+        text-align: center;
+        gap: 2rem;
+    }
+    
+    .hero-image {
+        order: 2;
+    }
+    
+    .hero-content {
+        order: 1;
     }
     
     .hero-content {
         max-width: 100% !important;
+        padding-right: 0 !important;
+    }
+    
+    .hero-content p {
+        font-size: 0.9rem;
+        line-height: 1.5;
     }
 }
 
 @media (max-width: 576px) {
+    header {
+        padding: 1rem 3%;
+    }
+    
+    .logo {
+        font-size: 1.5rem;
+    }
+    
     h1 {
-        font-size: 2rem !important;
+        font-size: 1.5rem !important;
         line-height: 1.4 !important;
         word-wrap: break-word;
         overflow-wrap: break-word;
         padding: 0 !important;
         margin-bottom: 1rem !important;
         display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        /* Keep gradient but ensure it's visible */
+        width: 100% !important;
+        max-width: 100% !important;
         background: linear-gradient(45deg, var(--primary-color), var(--secondary-color)) !important;
         -webkit-background-clip: text !important;
         background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
-        /* Fallback for browsers that don't support gradient text */
         color: var(--primary-color);
+        text-align: center;
     }
     
     h2 {
-        font-size: 1.6rem;
+        font-size: 1.4rem;
+        padding: 0 0.5rem;
     }
     
     .hero {
-        padding: 3rem 5% !important;
+        padding: 2rem 4% !important;
         overflow: visible !important;
+        min-height: auto !important;
+        flex-direction: column;
+        gap: 1.5rem;
     }
     
     .hero-content {
         padding: 0 !important;
         max-width: 100% !important;
         overflow: visible !important;
+        width: 100% !important;
     }
     
     .hero-content p {
-        font-size: 0.95rem;
+        font-size: 0.85rem;
         padding: 0 !important;
+        line-height: 1.6;
+        text-align: center;
+        margin-bottom: 1.5rem;
     }
     
     .gift-card-preview {
-        width: 280px;
-        height: 400px;
+        width: 260px;
+        height: 380px;
     }
     
     .step-number {
@@ -1001,20 +1112,49 @@ footer {
         height: 40px;
         font-size: 1.2rem;
     }
+    
+    .occasions,
+    .how-it-works {
+        padding: 3rem 3%;
+    }
+    
+    .occasion-grid,
+    .steps {
+        gap: 1.5rem;
+    }
 }
 
 /* Extra small devices */
-@media (max-width: 400px) {
+@media (max-width: 450px) {
+    header {
+        padding: 0.8rem 3%;
+    }
+    
+    .logo {
+        font-size: 1.3rem;
+    }
+    
     h1 {
-        font-size: 1.6rem !important;
+        font-size: 1.3rem !important;
         white-space: normal !important;
         max-width: 100% !important;
         width: 100% !important;
+        line-height: 1.4 !important;
+        text-align: center;
+    }
+    
+    h2 {
+        font-size: 1.3rem;
+    }
+    
+    nav a {
+        font-size: 1rem;
     }
     
     .hero {
-        padding: 2rem 3% !important;
+        padding: 2rem 4% !important;
         min-width: 100% !important;
+        gap: 1.5rem;
     }
     
     .hero-content {
@@ -1023,16 +1163,28 @@ footer {
     }
     
     .hero-content p {
-        font-size: 0.9rem;
+        font-size: 0.8rem;
+        line-height: 1.6;
+        text-align: center;
+        margin-bottom: 1.5rem;
     }
     
     .btn-large {
-        padding: 0.8rem 1.8rem;
-        font-size: 1rem;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+        width: 100%;
+        max-width: 200px;
+        display: block;
+        margin: 0 auto;
     }
     
     .gift-card-preview {
-        width: 250px;
-        height: 350px;
+        width: 220px;
+        height: 320px;
+    }
+    
+    .occasion-card,
+    .step {
+        padding: 1.5rem;
     }
 }
