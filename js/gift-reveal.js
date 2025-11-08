@@ -7,7 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
         message: urlParams.get('message') || 'Wishing you all the happiness in the world!',
         occasion: urlParams.get('occasion') || 'birthday',
         image: urlParams.get('image') || '',
-        giftId: urlParams.get('id') || null
+        giftId: urlParams.get('id') || null,
+        enableQuest: urlParams.get('quest') === 'true' || false
     };
 
     // Puzzle types
@@ -23,14 +24,30 @@ document.addEventListener('DOMContentLoaded', function() {
     async function loadGiftData(giftId) {
         try {
             console.log('🔍 Loading gift with ID:', giftId);
-            const savedGift = await window.giftStorage.getGift(giftId);
+            
+            // Try Firebase first if available
+            let savedGift = null;
+            if (window.firebaseApp && window.firebaseApp.isInitialized) {
+                savedGift = await window.firebaseApp.loadGift(giftId);
+                if (savedGift) {
+                    console.log('✅ Gift loaded from cloud');
+                }
+            }
+            
+            // Fallback to local storage
+            if (!savedGift) {
+                savedGift = await window.giftStorage.getGift(giftId);
+                if (savedGift) {
+                    console.log('✅ Gift loaded from local storage');
+                }
+            }
+            
             if (savedGift) {
                 Object.assign(giftData, savedGift);
-                console.log('✅ Gift loaded from IndexedDB');
                 console.log('📷 Image data present:', !!savedGift.image);
-                if (savedGift.image) {
-                    console.log('📏 Image data length:', savedGift.image.length);
-                }
+                console.log('🎵 Audio data present:', !!savedGift.audio);
+                console.log('🎨 Color:', savedGift.color);
+                console.log('✨ Stickers:', savedGift.stickers);
             } else {
                 console.warn('⚠️ No gift found with ID:', giftId);
             }
@@ -46,9 +63,14 @@ document.addEventListener('DOMContentLoaded', function() {
             await loadGiftData(giftData.giftId);
         }
         
-        // Skip puzzle and go directly to opening animation
         setupEventListeners();
-        showOpening();
+        
+        // Show quest if enabled, otherwise go directly to opening animation
+        if (giftData.enableQuest) {
+            showQuest();
+        } else {
+            showOpening();
+        }
     }
     
     init();
@@ -244,6 +266,17 @@ document.addEventListener('DOMContentLoaded', function() {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
         }
+    }
+    
+    // Show quest section
+    function showQuest() {
+        questSection.style.display = 'flex';
+        questSection.classList.add('active');
+        openingSection.classList.remove('active');
+        revealSection.classList.remove('active');
+        
+        // Load random puzzle
+        loadPuzzle(currentPuzzle);
     }
     
     // Skip quest

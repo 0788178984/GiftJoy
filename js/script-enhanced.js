@@ -224,6 +224,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const senderName = document.getElementById('sender-name-input')?.value || 'Someone Special';
         const message = document.getElementById('message')?.value || 'Wishing you all the happiness in the world!';
         const theme = document.querySelector('.theme-option.active')?.getAttribute('data-theme') || 'classic';
+        const enableQuest = document.getElementById('enable-quest')?.checked || false;
+        
+        // Get new features data
+        const color = window.giftFeatures ? window.giftFeatures.getColor() : '#FF6B9D';
+        const stickers = window.giftFeatures ? window.giftFeatures.getStickers() : [];
+        const audio = window.giftFeatures ? window.giftFeatures.getAudio() : null;
         
         // Generate unique gift ID
         const giftId = generateGiftId();
@@ -238,13 +244,30 @@ document.addEventListener('DOMContentLoaded', function() {
             theme,
             giftType: selectedGiftType,
             image: uploadedImage,
+            audio: audio,
+            color: color,
+            stickers: stickers,
+            enableQuest: enableQuest,
             createdAt: new Date().toISOString()
         };
         
-        // Save to IndexedDB (much larger storage capacity)
+        // Save to cloud if Firebase is available, otherwise use local storage
         try {
-            await window.giftStorage.saveGift(giftData);
-            console.log('✅ Gift saved to IndexedDB');
+            if (window.firebaseApp && window.firebaseApp.isInitialized) {
+                // Upload image and audio to cloud storage if present
+                if (uploadedImage) {
+                    giftData.image = await window.firebaseApp.uploadImage(uploadedImage, giftId);
+                }
+                if (audio) {
+                    giftData.audio = await window.firebaseApp.uploadAudio(audio, giftId);
+                }
+                
+                await window.firebaseApp.saveGift(giftData);
+                console.log('✅ Gift saved to cloud');
+            } else {
+                await window.giftStorage.saveGift(giftData);
+                console.log('✅ Gift saved to local storage');
+            }
         } catch (e) {
             console.error('Error saving gift:', e);
             alert('❌ Failed to save gift. Please try again.');
@@ -253,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Generate gift link
         const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '');
-        const giftUrl = `${baseUrl}gift.html?id=${giftId}`;
+        const giftUrl = `${baseUrl}gift.html?id=${giftId}${enableQuest ? '&quest=true' : ''}`;
         
         // Create preview container
         const existingPreview = document.querySelector('.gift-preview-container');
@@ -304,6 +327,9 @@ document.addEventListener('DOMContentLoaded', function() {
             <button id="share-whatsapp" class="btn-primary" style="background: #25D366;">
                 <i class="fab fa-whatsapp"></i> WhatsApp
             </button>
+            <button id="share-twitter" class="btn-primary" style="background: #1DA1F2;">
+                <i class="fab fa-twitter"></i> Twitter
+            </button>
             <button id="share-email" class="btn-primary" style="background: #EA4335;">
                 <i class="fas fa-envelope"></i> Email
             </button>
@@ -338,6 +364,11 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('share-whatsapp')?.addEventListener('click', () => {
                 const text = `🎁 ${senderName} sent you a special gift! Open it here:`;
                 window.open(`https://wa.me/?text=${encodeURIComponent(text + ' ' + giftUrl)}`, '_blank');
+            });
+            
+            document.getElementById('share-twitter')?.addEventListener('click', () => {
+                const text = `🎁 I just received an amazing gift! Check out GiftJoy to create your own surprise gifts!`;
+                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(giftUrl)}`, '_blank');
             });
             
             document.getElementById('share-email')?.addEventListener('click', () => {

@@ -8,6 +8,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 </head>
 <body>
     <div class="app">
@@ -24,6 +30,12 @@
                 <a href="#occasions">Occasions</a>
                 <a href="#how-it-works">How It Works</a>
                 <button class="btn-primary">Create Gift</button>
+                <button id="account-btn" class="btn-account" style="display: none;">
+                    <i class="fas fa-user-circle"></i> <span id="user-name">Account</span>
+                </button>
+                <button id="sign-in-btn" class="btn-secondary">
+                    <i class="fab fa-google"></i> Sign In
+                </button>
             </nav>
         </header>
 
@@ -152,6 +164,77 @@
                     <input type="file" id="gift-image" accept="image/*">
                     <div id="image-preview" class="image-preview"></div>
                 </div>
+                
+                <div class="form-group">
+                    <label>Add Background Music (Optional) 🎵</label>
+                    <div class="music-library">
+                        <div class="music-option active" data-music="none">
+                            <i class="fas fa-volume-mute"></i>
+                            <span>No Music</span>
+                        </div>
+                        <div class="music-option" data-music="https://cdn.pixabay.com/audio/2022/03/10/audio_c8a0c7c0b8.mp3" data-name="Happy Birthday">
+                            <i class="fas fa-music"></i>
+                            <span>Happy Birthday</span>
+                        </div>
+                        <div class="music-option" data-music="https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3" data-name="Romantic">
+                            <i class="fas fa-heart"></i>
+                            <span>Romantic</span>
+                        </div>
+                        <div class="music-option" data-music="https://cdn.pixabay.com/audio/2022/03/15/audio_4e3f3f5a2f.mp3" data-name="Celebration">
+                            <i class="fas fa-glass-cheers"></i>
+                            <span>Celebration</span>
+                        </div>
+                        <div class="music-option" data-music="https://cdn.pixabay.com/audio/2021/08/04/audio_bb630cc098.mp3" data-name="Joyful">
+                            <i class="fas fa-smile"></i>
+                            <span>Joyful</span>
+                        </div>
+                        <div class="music-option" data-music="https://cdn.pixabay.com/audio/2022/01/18/audio_c8c0b3c0d9.mp3" data-name="Peaceful">
+                            <i class="fas fa-dove"></i>
+                            <span>Peaceful</span>
+                        </div>
+                        <div class="music-option" data-music="custom">
+                            <i class="fas fa-upload"></i>
+                            <span>Upload Own</span>
+                        </div>
+                    </div>
+                    <div id="custom-audio-upload" class="custom-audio-upload" style="display: none;">
+                        <input type="file" id="gift-audio" accept="audio/*">
+                        <p style="font-size: 0.85rem; color: #6C757D; margin-top: 0.5rem;">
+                            Upload your own music or voice message (Max 5MB)
+                        </p>
+                    </div>
+                    <div id="audio-preview" class="audio-preview"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Gift Box Color 🎨</label>
+                    <div class="color-options">
+                        <div class="color-option active" data-color="#FF6B9D" style="background: linear-gradient(135deg, #FF6B9D 0%, #FFA6C1 100%);"></div>
+                        <div class="color-option" data-color="#667EEA" style="background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);"></div>
+                        <div class="color-option" data-color="#F093FB" style="background: linear-gradient(135deg, #F093FB 0%, #F5576C 100%);"></div>
+                        <div class="color-option" data-color="#4FACFE" style="background: linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%);"></div>
+                        <div class="color-option" data-color="#43E97B" style="background: linear-gradient(135deg, #43E97B 0%, #38F9D7 100%);"></div>
+                        <div class="color-option" data-color="#FA709A" style="background: linear-gradient(135deg, #FA709A 0%, #FEE140 100%);"></div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Add Stickers/Emojis (Optional) ✨</label>
+                    <div class="sticker-options">
+                        <span class="sticker-item" data-sticker="🎉">🎉</span>
+                        <span class="sticker-item" data-sticker="❤️">❤️</span>
+                        <span class="sticker-item" data-sticker="🎂">🎂</span>
+                        <span class="sticker-item" data-sticker="🌟">🌟</span>
+                        <span class="sticker-item" data-sticker="🎈">🎈</span>
+                        <span class="sticker-item" data-sticker="🌹">🌹</span>
+                        <span class="sticker-item" data-sticker="💝">💝</span>
+                        <span class="sticker-item" data-sticker="🎊">🎊</span>
+                        <span class="sticker-item" data-sticker="💐">💐</span>
+                        <span class="sticker-item" data-sticker="🦋">🦋</span>
+                    </div>
+                    <div id="selected-stickers" class="selected-stickers"></div>
+                </div>
+                
                 <div class="form-group">
                     <label>Choose a Theme</label>
                     <div class="theme-options">
@@ -195,12 +278,25 @@
                         </div>
                     </div>
                 </div>
+                
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" id="enable-quest" style="width: auto; cursor: pointer;">
+                        <span>Add Fun Quest/Puzzle Before Reveal 🎮</span>
+                    </label>
+                    <p style="font-size: 0.85rem; color: #6C757D; margin-top: 0.5rem;">
+                        Make it more fun! Recipient will solve a quick puzzle before seeing the gift.
+                    </p>
+                </div>
+                
                 <button id="preview-gift" class="btn-primary btn-large">Preview Gift</button>
             </div>
         </div>
     </div>
 
+    <script src="js/firebase-config.js"></script>
     <script src="js/storage-manager.js"></script>
+    <script src="js/app-features.js"></script>
     <script src="js/script-enhanced.js"></script>
 </body>
 </html>
